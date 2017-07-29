@@ -1,6 +1,7 @@
 <?php
 
 // 2013/02/25 Class created to support a new version of the ClassIO Code Generator. -Rn
+// 2017/07/29 - Added braces to support the C/C++-challenged software developer, -Rn
 
 include_once 'IndexedData.php';
 
@@ -37,12 +38,14 @@ class IndexedArray extends IndexedData {
     public function arrayToString($array) {
         $result = '';
         $tot = count($array);
-        if ($tot == 1)
+        if ($tot == 1) {
             return $array; // already a string
+        }
         for ($ss = 0; $ss < $tot; $ss++) {
             $result .= $array[$ss];
-            if ($ss != ($tot - 1))
+            if ($ss != ($tot - 1)) {
                 $result .= $this->code;
+            }
         }
         return $result;
     }
@@ -55,38 +58,40 @@ class IndexedArray extends IndexedData {
      * @return type The original array of strings.
      */
     public function stringToArray($string) {
-        if (strstr($string, $this->code) === FALSE)
+        if (strstr($string, $this->code) === FALSE) {
             return $string;
+        }
         return explode($this->code, $string);
     }
 
 }
+
 /*
-// TEST NEW FEATURES, ONLY.
-// TODO: Might want to move these to a test framework some day ...
-$test = true;
-if ($test === TRUE) {
-    $coder = new IndexedArray();
+  // TEST NEW FEATURES, ONLY.
+  // TODO: Might want to move these to a test framework some day ...
+  $test = true;
+  if ($test === TRUE) {
+  $coder = new IndexedArray();
 
-    $str = "booys fooya";
-    $string = $coder->arrayToString($str);
-    if (strcmp($string, $str) != 0)
-        echo "<br>ERROR 101<br>\r\n";
-    $string = $coder->stringToArray($str);
-    if (strcmp($string, $str) != 0)
-        echo "<br>ERROR 201<br>\r\n";
+  $str = "booys fooya";
+  $string = $coder->arrayToString($str);
+  if (strcmp($string, $str) != 0)
+  echo "<br>ERROR 101<br>\r\n";
+  $string = $coder->stringToArray($str);
+  if (strcmp($string, $str) != 0)
+  echo "<br>ERROR 201<br>\r\n";
 
-    $pizza = array();
-    for ($ss = 0; $ss < 10; $ss++) {
-        $pizza[$ss] = 'slice' . $ss;
-    }
+  $pizza = array();
+  for ($ss = 0; $ss < 10; $ss++) {
+  $pizza[$ss] = 'slice' . $ss;
+  }
 
-    $string = $coder->arrayToString($pizza);
-    echo "PASS: $string<br><br>\r\n";
-    $array = $coder->stringToArray($string);
+  $string = $coder->arrayToString($pizza);
+  echo "PASS: $string<br><br>\r\n";
+  $array = $coder->stringToArray($string);
 
-    foreach ($array as $str)
-        echo "Got: $str<br>\r\n";
-}
+  foreach ($array as $str)
+  echo "Got: $str<br>\r\n";
+  }
  */
 ?>

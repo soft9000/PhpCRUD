@@ -1,5 +1,7 @@
 <?php
+
 // 2012/04/01 - Updated delete(), -Rn
+// 2017/07/29 - Added braces to support the C/C++-challenged software developer, -Rn
 
 include_once 'IndexInfo.php';
 include_once 'EncodedPstring.php';
@@ -10,7 +12,7 @@ include_once 'EncodedPstring.php';
  * @author profnagy
  */
 class IndexedDataInfo extends IndexInfo {
-    
+
     /**
      * Demonstrated Base64 encoding can take as much as 30% of the final record space.
      * If you set isEncoded to TRUE, be sure to adjust your $data_min sizes accordingly!
@@ -47,19 +49,22 @@ class IndexedDataInfo extends IndexInfo {
         return unlink($this->file_data);
     }
 
-
     /**
      * Remove any index file and  / or data file(s).
      * 
      * @return boolean True if BOTH the data and index files were removed. False otherwise.
      */
     function delete() {
-        if (file_exists($this->file_index))
-            if ($this->deleteIndex() == false)
+        if (file_exists($this->file_index)) {
+            if ($this->deleteIndex() == false) {
                 return false;
-        if (file_exists($this->file_data))
-            if ($this->deleteData() == false)
-                return false;
+            }
+            if (file_exists($this->file_data)) {
+                if ($this->deleteData() == false) {
+                    return false;
+                }
+            }
+        }
         return true;
     }
 
@@ -99,7 +104,6 @@ class IndexedDataInfo extends IndexInfo {
         $record = $pas->AsString($string, $this->isEncoded);
         return strlen($record) - strlen($string);
     }
-    
 
 }
 

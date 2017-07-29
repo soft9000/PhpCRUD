@@ -2,6 +2,8 @@
 
 // 2012/04/01 - Fixed dataFileSize(). Added 'b' options for Microsoft interop, -Rn
 // 2013/02/25 - Created + added EncodeArray - Rn
+// 2017/07/29 - Added braces to support the C/C++-challenged software developer, -Rn
+
 
 /**
  * IndexedData manages an indexed set of fixed-length data-records.
@@ -33,7 +35,7 @@ class IndexedData extends IndexFile {
      * @param type $info IndexedDataInfo
      * @param type $fp Where to write it
      * @param type $rec What to write there
-     * @param boolean $limit (optional) TRUE to enforce the size-limitaiton. False to allow record overflow.
+     * @param boolean $limit (optional) TRUE to enforce the size-limitation. False to allow record overflow.
      * @return boolean True if the record was written, FALSE if the record was not. 
      * The use of $limit implies different failure-meanings, yet the same result (i.e not written.)
      */
@@ -48,8 +50,9 @@ class IndexedData extends IndexFile {
             }
         } else {
             $len = $pas->WriteString($fp, $rec, $info->isEncoded);
-            if ($len >= $info->data_min)
+            if ($len >= $info->data_min) {
                 return true;
+            }
         }
         $remainder = $info->data_min - $len;
         $pad = str_pad("", $remainder, '~');
@@ -68,8 +71,9 @@ class IndexedData extends IndexFile {
     function append($info, $record) {
         $number = IndexedData::index_tally($info);
         $fp = fopen($info->file_data, 'a');
-        if ($fp === false)
+        if ($fp === false) {
             return false;
+        }
         $br = false;
         $pos = IndexedData::dataFileSize($info);
         // $pos = ftell($fp); - will not work with append mode -
@@ -78,8 +82,9 @@ class IndexedData extends IndexFile {
             $br = IndexedData::index_append($info, $pos);
         }
         fclose($fp);
-        if ($br !== false)
+        if ($br !== false) {
             return $number;
+        }
         return false;
     }
 
@@ -92,23 +97,27 @@ class IndexedData extends IndexFile {
      */
     function read($info, $ss) {
         $pos = IndexedData::index_read($info, $ss);
-        if ($pos == false)
+        if ($pos == false) {
             return false;
+        }
         $fp = fopen($info->file_data, 'rb');
-        if ($fp === false)
+        if ($fp === false) {
             return false;
+        }
 
         $br = fseek($fp, $pos);
         if ($br !== false) {
             //$result = fgets($fp, $info->data_max);
             $pas = new EPString();
             $result = $pas->ReadString($fp, $info->isEncoded);
-            if ($result === false)
+            if ($result === false) {
                 $br = false;
+            }
         }
         fclose($fp);
-        if ($br === false)
+        if ($br === false) {
             return false;
+        }
         return $result;
     }
 
@@ -124,18 +133,21 @@ class IndexedData extends IndexFile {
      */
     function update($info, $ss, $record) {
         $pos = IndexedData::index_read($info, $ss);
-        if ($pos == false)
+        if ($pos == false) {
             return false;
+        }
         $fp = fopen($info->file_data, 'r+b');
-        if ($fp === false)
+        if ($fp === false) {
             return false;
+        }
         $br = fseek($fp, $pos);
         if ($br !== false) {
             $br = IndexedData::write_payload($info, $fp, $record, true); // yes - limit
         }
         fclose($fp);
-        if ($br === false)
+        if ($br === false) {
             return false;
+        }
         return true;
     }
 

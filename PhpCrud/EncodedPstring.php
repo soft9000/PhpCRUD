@@ -1,6 +1,7 @@
 <?php
 
 // 2012/04/01 - Removed compile-time warning in PeekPrefix.
+// 2017/07/29 - Added braces to support the C/C++-challenged software developer, -Rn
 
 /**
  * Base-64 encoded PString.
@@ -21,10 +22,11 @@ class EPString {
     }
 
     public function AsString($record, $encode = true) {
-        if ($encode == true)
+        if ($encode == true) {
             $string = base64_encode($record);
-        else
+        } else {
             $string = $record;
+        }
         return sprintf("%d\t%s", strlen($string) + 1, $string);
     }
 
@@ -37,27 +39,33 @@ class EPString {
         }
         $char = null;
         while ($char != "\t") {
-            if (feof($handle))
+            if (feof($handle)) {
                 return false;
+            }
             $char = fgetc($handle);
-            if ($char == "\t")
+            if ($char == "\t") {
                 continue;
+            }
             $len = $len . $char;
         }
-        if ($peek == true)
-            if (fseek($handle, $pos) == -1)
+        if ($peek == true) {
+            if (fseek($handle, $pos) == -1) {
                 return false;
+            }
+        }
         // echo "Pascal Prefix = $len\r\n<br>";
         return $len;
     }
 
     public function ReadString($handle, $encode = true) {
         $len = EPString::PeekPrefix($handle, false);
-        if ($len === false)
+        if ($len === false) {
             return false;
+        }
         $string = fgets($handle, $len);
-        if ($encode == false)
+        if ($encode == false) {
             return $string;
+        }
         $record = base64_decode($string);
         return $record;
     }
@@ -91,8 +99,9 @@ class PFastFetch {
     public function Get($file, $iPos) {
         $index = PFastFetch::CalcIndexName($file);
         $iHandle = fopen($index, 'r');
-        if ($iHandle == false)
+        if ($iHandle == false) {
             return null;
+        }
         $ixpos = $iPos * 11;
         fseek($iHandle, $ixpos);
         $ifpos = fgets($iHandle);

@@ -1,5 +1,8 @@
 <?php
+
 // 2012/04/01 - Fixed stat in index_tally, -Rn
+// 2017/07/29 - Added braces to support the C/C++-challenged software developer, -Rn
+
 
 /**
  * An index file is an ASCII heap of fixed-length strings.
@@ -37,8 +40,9 @@ class IndexFile {
     function index_append($info, $pos) {
         $record = str_pad($pos, $info->index_max);
         $result = file_put_contents($info->file_index, $record, FILE_APPEND | LOCK_EX);
-        if ($result !== false)
+        if ($result !== false) {
             return true;
+        }
         return false;
     }
 
@@ -50,11 +54,13 @@ class IndexFile {
      * @return boolean  TRUE on success, FALSE on failure.
      */
     function index_read($info, $ss) {
-        if (file_exists($info->file_index) == false)
+        if (file_exists($info->file_index) == false) {
             return false;
+        }
         $fp = fopen($info->file_index, 'r');
-        if ($fp === false)
+        if ($fp === false) {
             return false;
+        }
         $pos = $ss * $info->index_max;
         $br = fseek($fp, $pos);
         if ($br !== false) {
